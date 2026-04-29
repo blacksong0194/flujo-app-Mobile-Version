@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:app_links/app_links.dart';
 import 'router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +15,17 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+
+  // Capturar deep links para Google OAuth callback
+  final appLinks = AppLinks();
+  appLinks.uriLinkStream.listen((uri) {
+    final uriStr = uri.toString();
+    if (uriStr.contains('login-callback') ||
+        uriStr.contains('access_token') ||
+        uriStr.contains('code=')) {
+      Supabase.instance.client.auth.getSessionFromUrl(uri);
+    }
+  });
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -133,4 +145,3 @@ class FlujoApp extends ConsumerWidget {
     );
   }
 }
-

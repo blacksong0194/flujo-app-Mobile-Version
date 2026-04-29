@@ -14,15 +14,27 @@ import 'screens/settings/settings_screen.dart';
 import 'screens/pending/pending_screen.dart';
 import 'widgets/common/main_shell.dart';
 
+// Notifier que escucha cambios de sesión de Supabase
+class _AuthNotifier extends ChangeNotifier {
+  _AuthNotifier() {
+    Supabase.instance.client.auth.onAuthStateChange.listen((_) {
+      notifyListeners();
+    });
+  }
+}
+
+final _authNotifier = _AuthNotifier();
+
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/dashboard',
+    refreshListenable: _authNotifier,
     redirect: (context, state) {
       final session = Supabase.instance.client.auth.currentSession;
       final isAuth  = session != null;
       final inAuth  = state.matchedLocation.startsWith('/auth');
       if (!isAuth && !inAuth) return '/auth/login';
-      if (isAuth && inAuth) return '/dashboard';
+      if (isAuth && inAuth)  return '/dashboard';
       return null;
     },
     routes: [
