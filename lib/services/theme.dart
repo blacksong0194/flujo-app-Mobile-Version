@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -26,11 +27,14 @@ final _dateFmt  = DateFormat('d MMM yyyy', 'es');
 final _monthFmt = DateFormat('MMMM yyyy', 'es');
 
 String fmtCurrency(double v) {
-  final abs = v.abs();
   final sign = v < 0 ? '-' : '';
-  if (abs >= 1000000) return '${sign}RD\$${(abs / 1000000).toStringAsFixed(1)}M';
-  if (abs >= 1000)    return '${sign}RD\$${(abs / 1000).toStringAsFixed(0)}K';
-  return '${sign}RD\$${abs.toStringAsFixed(0)}';
+  final abs = v.abs();
+  final parts = abs.toStringAsFixed(2).split('.');
+  final intPart = parts[0].replaceAllMapped(
+    RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+    (m) => '${m[1]},',
+  );
+  return '${sign}RD\$$intPart.${parts[1]}';
 }
 String fmtCompact(double v) => fmtCurrency(v);
 String fmtDate(DateTime d)  => _dateFmt.format(d);

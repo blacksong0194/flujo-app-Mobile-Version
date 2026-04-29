@@ -164,14 +164,18 @@ class _SummaryChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: color.withOpacity(0.2)),
       ),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(label, style: TextStyle(fontSize: 11, color: color.withOpacity(0.8))),
-        Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: color)),
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: TextStyle(fontSize: 11, color: color.withOpacity(0.8)),
+            overflow: TextOverflow.ellipsis),
+          Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: color),
+            overflow: TextOverflow.ellipsis),
+        ],
+      ),
     ),
   );
 }
-
 class _TxListTile extends StatelessWidget {
   final Transaction tx;
   final VoidCallback onDelete;
@@ -226,7 +230,7 @@ class _TxListTile extends StatelessWidget {
               style: const TextStyle(fontSize: 11, color: kMuted)),
           ])),
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Text('${tx.type == 'transfer' ? (tx.amount > 0 ? '+' : '') : typeSign(tx.type)}${fmtCompact(tx.amount)}',
+            Text('${tx.amount >= 0 ? '+' : ''}${fmtCompact(tx.amount)}',
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: getColor())),
             Text(fmtDate(tx.transactionDate), style: const TextStyle(fontSize: 10, color: kMuted)),
           ]),
@@ -392,7 +396,9 @@ class _AddTxSheetState extends ConsumerState<_AddTxSheet> {
       await ref.read(financeProvider.notifier).addTransaction({
         'account_id':       _accountId,
         'category_id':      _categoryId,
-        'amount':           double.parse(_amountCtrl.text),
+        'amount': _type == 'expense'
+    ? -double.parse(_amountCtrl.text)
+    : double.parse(_amountCtrl.text),
         'detail':           _detailCtrl.text,
         'transaction_date': _date.toIso8601String().split('T')[0],
         'type':             _type,

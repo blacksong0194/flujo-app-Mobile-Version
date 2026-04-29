@@ -25,6 +25,14 @@ android {
     sourceSets {
         main.java.srcDirs += "src/main/kotlin"
     }
+signingConfigs {
+        release {
+            storeFile file("flujo-release.jks")
+            storePassword "960308"
+            keyAlias "flujo"
+            keyPassword "960308"
+        }
+    }
     defaultConfig {
         applicationId "com.blacksong.flujo"
         minSdkVersion flutter.minSdkVersion
@@ -35,7 +43,7 @@ android {
     }
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
     lintOptions {
