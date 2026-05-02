@@ -13,6 +13,7 @@ import 'screens/reports/reports_screen.dart';
 import 'screens/settings/settings_screen.dart';
 import 'screens/pending/pending_screen.dart';
 import 'widgets/common/main_shell.dart';
+import 'screens/recurring/recurring_screen.dart';
 
 // Notifier que escucha cambios de sesión de Supabase
 class _AuthNotifier extends ChangeNotifier {
@@ -51,6 +52,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(path: '/goals',        builder: (_, __) => const GoalsScreen()),
           GoRoute(path: '/reports',      builder: (_, __) => const ReportsScreen()),
           GoRoute(path: '/settings',     builder: (_, __) => const SettingsScreen()),
+	GoRoute(path: '/recurring', builder: (_, __) => const RecurringScreen()),
         ],
       ),
     ],
